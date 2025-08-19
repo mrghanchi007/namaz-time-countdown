@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 
 interface SettingsData {
   islamicDateOffset: number;
+  fiqh: 'hanafi' | 'shafee';
   jamatTimes: {
     [key: string]: string;
   };
@@ -18,6 +19,7 @@ export const Settings = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [settings, setSettings] = useState<SettingsData>({
     islamicDateOffset: 0,
+    fiqh: 'hanafi',
     jamatTimes: {}
   });
   const { toast } = useToast();
@@ -76,6 +78,23 @@ export const Settings = () => {
         </DialogHeader>
         
         <div className="space-y-6 py-4">
+          {/* Fiqh Selection */}
+          <div className="space-y-3">
+            <Label className="text-foreground font-semibold">Fiqh Method</Label>
+            <p className="text-sm text-muted-foreground">
+              Select your preferred fiqh for prayer time calculations
+            </p>
+            <Select value={settings.fiqh} onValueChange={(value: 'hanafi' | 'shafee') => setSettings(prev => ({ ...prev, fiqh: value }))}>
+              <SelectTrigger className="bg-secondary/50 border-border/50">
+                <SelectValue placeholder="Select Fiqh" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="hanafi">Hanafi</SelectItem>
+                <SelectItem value="shafee">Shafee</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           {/* Islamic Date Offset */}
           <div className="space-y-3">
             <Label className="text-foreground font-semibold">Islamic Date Adjustment</Label>

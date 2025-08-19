@@ -23,6 +23,7 @@ export const usePrayerTimes = (cityName: string) => {
     const settings = localStorage.getItem('prayerSettings');
     return settings ? JSON.parse(settings) : {
       islamicDateOffset: 0,
+      fiqh: 'hanafi',
       jamatTimes: {}
     };
   };
@@ -39,9 +40,17 @@ export const usePrayerTimes = (cityName: string) => {
       
       const date = new Date();
       const params = CalculationMethod.Karachi(); // Use Karachi method for Pakistan
+      
+      const settings = getSettings();
+      // Apply fiqh-specific adjustments
+      if (settings.fiqh === 'hanafi') {
+        params.madhab = 'hanafi'; // Hanafi school uses later Asr time
+      } else {
+        params.madhab = 'shafi'; // Shafee school uses earlier Asr time
+      }
+      
       const prayers = new PrayerTimes(coordinates, date, params);
 
-      const settings = getSettings();
       const isFriday = date.getDay() === 5;
       
       const prayerSchedule = [

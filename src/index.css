@@ -52,6 +52,10 @@ All colors MUST be HSL.
     --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     --shadow-prayer: 0 8px 32px hsl(264 83% 55% / 0.3);
     --shadow-card: 0 4px 20px hsl(220 25% 8% / 0.4);
+    
+    /* Mobile responsiveness improvements */
+    --mobile-padding: 1rem;
+    --mobile-gap: 0.75rem;
 
     --radius: 0.75rem;
 

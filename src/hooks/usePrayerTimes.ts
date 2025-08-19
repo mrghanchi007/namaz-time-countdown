@@ -9,11 +9,23 @@ interface PrayerTime {
   date: Date;
   isActive: boolean;
   isPassed: boolean;
+  isProhibited?: boolean;
+  isJamat?: boolean;
+  jamatTime?: string;
 }
 
 export const usePrayerTimes = (cityName: string) => {
   const [prayerTimes, setPrayerTimes] = useState<PrayerTime[]>([]);
   const [nextPrayer, setNextPrayer] = useState<{ name: string; time: Date } | null>(null);
+
+  // Get settings from localStorage
+  const getSettings = () => {
+    const settings = localStorage.getItem('prayerSettings');
+    return settings ? JSON.parse(settings) : {
+      islamicDateOffset: 0,
+      jamatTimes: {}
+    };
+  };
 
   useEffect(() => {
     const calculatePrayerTimes = () => {
@@ -29,9 +41,13 @@ export const usePrayerTimes = (cityName: string) => {
       const params = CalculationMethod.Karachi(); // Use Karachi method for Pakistan
       const prayers = new PrayerTimes(coordinates, date, params);
 
+      const settings = getSettings();
+      const isFriday = date.getDay() === 5;
+      
       const prayerSchedule = [
         { name: "Fajr", time: prayers.fajr },
-        { name: "Dhuhr", time: prayers.dhuhr },
+        { name: "Sunrise", time: prayers.sunrise, isProhibited: true },
+        { name: isFriday ? "Jummah" : "Dhuhr", time: prayers.dhuhr },
         { name: "Asr", time: prayers.asr },
         { name: "Maghrib", time: prayers.maghrib },
         { name: "Isha", time: prayers.isha },
@@ -45,18 +61,23 @@ export const usePrayerTimes = (cityName: string) => {
         return now >= prayer.time && now < nextPrayerTime;
       });
 
-      const formattedPrayerTimes: PrayerTime[] = prayerSchedule.map((prayer, index) => ({
-        name: prayer.name,
-        time: format(prayer.time, "h:mm a"),
-        date: prayer.time,
-        isActive: index === currentPrayerIndex,
-        isPassed: now > prayer.time && index !== currentPrayerIndex,
-      }));
+      const formattedPrayerTimes: PrayerTime[] = prayerSchedule.map((prayer, index) => {
+        const jamatTime = settings.jamatTimes[prayer.name];
+        return {
+          name: prayer.name,
+          time: format(prayer.time, "h:mm a"),
+          date: prayer.time,
+          isActive: index === currentPrayerIndex && !prayer.isProhibited,
+          isPassed: now > prayer.time && index !== currentPrayerIndex,
+          isProhibited: prayer.isProhibited,
+          jamatTime: jamatTime ? format(new Date(`2000-01-01 ${jamatTime}`), "h:mm a") : undefined,
+        };
+      });
 
       setPrayerTimes(formattedPrayerTimes);
 
-      // Find next prayer
-      const nextPrayerIndex = prayerSchedule.findIndex(prayer => prayer.time > now);
+      // Find next prayer (skip prohibited ones)
+      const nextPrayerIndex = prayerSchedule.findIndex(prayer => prayer.time > now && !prayer.isProhibited);
       if (nextPrayerIndex !== -1) {
         setNextPrayer({
           name: prayerSchedule[nextPrayerIndex].name,

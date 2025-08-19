@@ -7,6 +7,8 @@ interface PrayerTime {
   time: string;
   isActive: boolean;
   isPassed: boolean;
+  isProhibited?: boolean;
+  jamatTime?: string;
 }
 
 interface PrayerTimesCardProps {
@@ -26,7 +28,9 @@ export const PrayerTimesCard = ({ prayerTimes }: PrayerTimesCardProps) => {
               key={prayer.name}
               className={cn(
                 "flex items-center justify-between p-3 rounded-lg transition-all duration-300",
-                prayer.isActive
+                prayer.isProhibited
+                  ? "bg-destructive/20 border border-destructive/50 shadow-md"
+                  : prayer.isActive
                   ? "bg-gradient-primary shadow-prayer border border-primary/30"
                   : prayer.isPassed
                   ? "bg-muted/30 opacity-60"
@@ -37,7 +41,9 @@ export const PrayerTimesCard = ({ prayerTimes }: PrayerTimesCardProps) => {
                 <div
                   className={cn(
                     "w-2 h-2 rounded-full",
-                    prayer.isActive
+                    prayer.isProhibited
+                      ? "bg-destructive animate-pulse"
+                      : prayer.isActive
                       ? "bg-islamic-gold animate-pulse"
                       : prayer.isPassed
                       ? "bg-muted-foreground/50"
@@ -54,22 +60,36 @@ export const PrayerTimesCard = ({ prayerTimes }: PrayerTimesCardProps) => {
                 >
                   {prayer.name}
                 </span>
-                {prayer.isActive && (
+                {prayer.isProhibited && (
+                  <Badge variant="destructive" className="bg-destructive/20 text-destructive border-destructive/50">
+                    No Prayer
+                  </Badge>
+                )}
+                {prayer.isActive && !prayer.isProhibited && (
                   <Badge variant="secondary" className="bg-islamic-gold/20 text-islamic-gold border-islamic-gold/30">
                     Current
                   </Badge>
                 )}
               </div>
-              <span
-                className={cn(
-                  "font-mono text-lg",
-                  prayer.isActive
-                    ? "text-primary-foreground font-semibold"
-                    : "text-foreground"
+              <div className="text-right">
+                <span
+                  className={cn(
+                    "font-mono text-lg block",
+                    prayer.isProhibited
+                      ? "text-destructive font-semibold"
+                      : prayer.isActive
+                      ? "text-primary-foreground font-semibold"
+                      : "text-foreground"
+                  )}
+                >
+                  {prayer.time}
+                </span>
+                {prayer.jamatTime && !prayer.isProhibited && (
+                  <span className="text-xs text-islamic-gold font-mono">
+                    Jamat: {prayer.jamatTime}
+                  </span>
                 )}
-              >
-                {prayer.time}
-              </span>
+              </div>
             </div>
           ))}
         </div>

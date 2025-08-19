@@ -15,7 +15,7 @@ export const IslamicDateDisplay = ({ currentDate }: IslamicDateDisplayProps) => 
     return format(date, "h:mm:ss a");
   };
 
-  // Simple Islamic date approximation (this is basic - for production use proper Islamic calendar library)
+  // Simple Islamic date approximation with offset adjustment
   const getApproximateIslamicDate = (date: Date) => {
     const islamicMonths = [
       "Muharram", "Safar", "Rabi' al-awwal", "Rabi' al-thani",
@@ -23,9 +23,16 @@ export const IslamicDateDisplay = ({ currentDate }: IslamicDateDisplayProps) => 
       "Ramadan", "Shawwal", "Dhu al-Qi'dah", "Dhu al-Hijjah"
     ];
     
+    // Get settings for Islamic date offset
+    const settings = localStorage.getItem('prayerSettings');
+    const islamicDateOffset = settings ? JSON.parse(settings).islamicDateOffset || 0 : 0;
+    
+    // Apply offset to date
+    const adjustedDate = new Date(date.getTime() + (islamicDateOffset * 24 * 60 * 60 * 1000));
+    
     // This is a simplified approximation - real Islamic calendar calculation is more complex
     const islamicEpoch = new Date('622-07-16');
-    const daysSinceEpoch = Math.floor((date.getTime() - islamicEpoch.getTime()) / (1000 * 60 * 60 * 24));
+    const daysSinceEpoch = Math.floor((adjustedDate.getTime() - islamicEpoch.getTime()) / (1000 * 60 * 60 * 24));
     const islamicYear = Math.floor(daysSinceEpoch / 354.37) + 1; // Islamic year is approximately 354.37 days
     const dayOfYear = Math.floor(daysSinceEpoch % 354.37);
     const islamicMonth = Math.floor(dayOfYear / 29.53); // Islamic month is approximately 29.53 days

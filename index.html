@@ -2,20 +2,55 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/icon-192.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Islamic Prayer Times - Pakistan | Namaz Time Countdown</title>
-    <meta name="description" content="Beautiful Islamic prayer times app for Pakistani cities with countdown timers. Get accurate Namaz times for Karachi, Lahore, Islamabad and more." />
-    <meta name="author" content="Islamic Prayer Times App" />
-    <meta name="keywords" content="prayer times, namaz times, islamic prayer, pakistan prayer times, karachi prayer times, adhan times, salah times" />
-
-    <meta property="og:title" content="Islamic Prayer Times - Pakistan | Namaz Time Countdown" />
-    <meta property="og:description" content="Beautiful Islamic prayer times app for Pakistani cities with countdown timers. Get accurate Namaz times for Karachi, Lahore, Islamabad and more." />
+    <title>Prayer Times - Islamic Prayer Schedule for Pakistan</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#8b5cf6" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Prayer Times" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Accurate Islamic prayer times and countdown for major Pakistani cities including Karachi, Lahore, Islamabad. Real-time prayer schedule with beautiful Islamic design." />
+    <meta name="keywords" content="prayer times, namaz times, islamic prayer, pakistan, karachi, lahore, islamabad, muslim prayer schedule, adhan times, sunrise, jamat times" />
+    <meta name="author" content="Account4Web Inc" />
+    <meta name="robots" content="index, follow" />
+    <meta name="language" content="en" />
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Prayer Times - Islamic Prayer Schedule for Pakistan" />
+    <meta property="og:description" content="Accurate Islamic prayer times and countdown for major Pakistani cities. Real-time prayer schedule with beautiful design." />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-
+    <meta property="og:url" content="https://your-domain.com" />
+    <meta property="og:image" content="https://your-domain.com/icon-512.png" />
+    
+    <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    <meta name="twitter:title" content="Prayer Times - Islamic Prayer Schedule for Pakistan" />
+    <meta name="twitter:description" content="Accurate Islamic prayer times and countdown for major Pakistani cities." />
+    <meta name="twitter:image" content="https://your-domain.com/icon-512.png" />
+    
+    <!-- Canonical Link -->
+    <link rel="canonical" href="https://your-domain.com" />
+    
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('SW registered: ', registration);
+            })
+            .catch((registrationError) => {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
+    </script>
   </head>
 
   <body>

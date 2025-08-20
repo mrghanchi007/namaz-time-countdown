@@ -25,6 +25,41 @@ const Index = () => {
     return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
   }, []);
 
+  // Show install popup after 10 seconds
+  useEffect(() => {
+    if (deferredPrompt) {
+      const timer = setTimeout(() => {
+        const isInstalled = window.matchMedia('(display-mode: standalone)').matches;
+        if (!isInstalled && deferredPrompt) {
+          // Show install popup
+          const installPopup = document.createElement('div');
+          installPopup.innerHTML = `
+            <div style="position: fixed; top: 20px; right: 20px; background: hsl(var(--card)); border: 1px solid hsl(var(--border)); border-radius: 8px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000; max-width: 300px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <h3 style="margin: 0; color: hsl(var(--foreground)); font-size: 14px; font-weight: 600;">Install Prayer Times App</h3>
+                <button id="close-install" style="background: none; border: none; color: hsl(var(--muted-foreground)); cursor: pointer; font-size: 18px;">&times;</button>
+              </div>
+              <p style="margin: 0 0 12px 0; color: hsl(var(--muted-foreground)); font-size: 12px;">Get quick access to prayer times</p>
+              <button id="install-app" style="background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 12px; width: 100%;">Install App</button>
+            </div>
+          `;
+          document.body.appendChild(installPopup);
+          
+          document.getElementById('install-app')?.addEventListener('click', () => {
+            handleInstallApp();
+            document.body.removeChild(installPopup);
+          });
+          
+          document.getElementById('close-install')?.addEventListener('click', () => {
+            document.body.removeChild(installPopup);
+          });
+        }
+      }, 10000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [deferredPrompt]);
+
   const handleInstallApp = async () => {
     if (deferredPrompt) {
       deferredPrompt.prompt();
@@ -61,20 +96,7 @@ const Index = () => {
               selectedCity={selectedCity} 
               onCityChange={setSelectedCity} 
             />
-            <div className="flex gap-2">
-              <Settings />
-              {deferredPrompt && (
-                <Button 
-                  onClick={handleInstallApp}
-                  variant="outline" 
-                  size="sm"
-                  className="bg-secondary/50 border-border/50 hover:bg-secondary/70"
-                >
-                  <Download className="h-4 w-4 mr-2" />
-                  Install App
-                </Button>
-              )}
-            </div>
+            <Settings />
           </div>
         </div>
       </div>
@@ -105,7 +127,7 @@ const Index = () => {
         {/* Footer */}
         <footer className="text-center mt-12 py-6 border-t border-border/50">
           <p className="text-muted-foreground text-sm mb-2">
-            🕌 May Allah accept your prayers • Prayer times calculated using Karachi method
+            🕌 May Allah accept your prayers
           </p>
           <p className="text-muted-foreground text-xs">
             Design by Account4Web Inc

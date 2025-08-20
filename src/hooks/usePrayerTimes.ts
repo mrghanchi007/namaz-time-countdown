@@ -21,12 +21,14 @@ export const usePrayerTimes = (cityName: string) => {
   // Get settings from localStorage
   const getSettings = () => {
     const settings = localStorage.getItem('prayerSettings');
-    return settings ? JSON.parse(settings) : {
+    const parsedSettings = settings ? JSON.parse(settings) : {
       islamicDateOffset: 0,
       fiqh: 'hanafi',
       sunriseDuration: 15,
       jamatTimes: {}
     };
+    console.log('Loaded settings:', parsedSettings); // Debug log
+    return parsedSettings;
   };
 
   useEffect(() => {
@@ -55,7 +57,9 @@ export const usePrayerTimes = (cityName: string) => {
       const isFriday = date.getDay() === 5;
       
       // Calculate sunrise end time
+      console.log('Sunrise duration from settings:', settings.sunriseDuration); // Debug log
       const sunriseEnd = new Date(prayers.sunrise.getTime() + settings.sunriseDuration * 60 * 1000);
+      console.log('Sunrise:', prayers.sunrise, 'Sunrise End:', sunriseEnd); // Debug log
       
       const prayerSchedule = [
         { name: "Fajr", time: prayers.fajr },

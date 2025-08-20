@@ -36,6 +36,7 @@ export const Settings = () => {
   }, []);
 
   const saveSettings = () => {
+    console.log('Saving settings:', settings); // Debug log
     localStorage.setItem('prayerSettings', JSON.stringify(settings));
     toast({
       title: "Settings Saved",

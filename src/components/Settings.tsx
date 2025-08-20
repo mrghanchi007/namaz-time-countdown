@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 interface SettingsData {
   islamicDateOffset: number;
   fiqh: 'hanafi' | 'shafee';
+  sunriseDuration: number; // in minutes
   jamatTimes: {
     [key: string]: string;
   };
@@ -20,6 +21,7 @@ export const Settings = () => {
   const [settings, setSettings] = useState<SettingsData>({
     islamicDateOffset: 0,
     fiqh: 'hanafi',
+    sunriseDuration: 15, // default 15 minutes
     jamatTimes: {}
   });
   const { toast } = useToast();
@@ -48,6 +50,13 @@ export const Settings = () => {
     setSettings(prev => ({
       ...prev,
       islamicDateOffset: Math.max(-3, Math.min(3, offset))
+    }));
+  };
+
+  const updateSunriseDuration = (duration: number) => {
+    setSettings(prev => ({
+      ...prev,
+      sunriseDuration: Math.max(1, Math.min(60, duration)) // 1-60 minutes
     }));
   };
 
@@ -93,6 +102,39 @@ export const Settings = () => {
                 <SelectItem value="shafee">Shafee</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+
+          {/* Sunrise Duration */}
+          <div className="space-y-3">
+            <Label className="text-foreground font-semibold">Sunrise Duration</Label>
+            <p className="text-sm text-muted-foreground">
+              How long does the sunrise period last? (1-60 minutes)
+            </p>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => updateSunriseDuration(settings.sunriseDuration - 1)}
+                disabled={settings.sunriseDuration <= 1}
+                className="px-3"
+              >
+                -
+              </Button>
+              <div className="flex-1 text-center">
+                <span className="text-lg font-mono text-islamic-gold">
+                  {settings.sunriseDuration} min
+                </span>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => updateSunriseDuration(settings.sunriseDuration + 1)}
+                disabled={settings.sunriseDuration >= 60}
+                className="px-3"
+              >
+                +
+              </Button>
+            </div>
           </div>
 
           {/* Islamic Date Offset */}

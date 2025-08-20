@@ -27,6 +27,11 @@ export const usePrayerTimes = (cityName: string) => {
       sunriseDuration: 15,
       jamatTimes: {}
     };
+    
+    // Ensure sunriseDuration is a number
+    parsedSettings.sunriseDuration = Number(parsedSettings.sunriseDuration) || 15;
+    parsedSettings.islamicDateOffset = Number(parsedSettings.islamicDateOffset) || 0;
+    
     console.log('Loaded settings:', parsedSettings); // Debug log
     return parsedSettings;
   };

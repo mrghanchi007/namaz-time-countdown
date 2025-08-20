@@ -31,7 +31,11 @@ export const Settings = () => {
   useEffect(() => {
     const savedSettings = localStorage.getItem('prayerSettings');
     if (savedSettings) {
-      setSettings(JSON.parse(savedSettings));
+      const parsed = JSON.parse(savedSettings);
+      // Ensure numeric values are properly converted
+      parsed.sunriseDuration = Number(parsed.sunriseDuration) || 15;
+      parsed.islamicDateOffset = Number(parsed.islamicDateOffset) || 0;
+      setSettings(parsed);
     }
   }, []);
 
